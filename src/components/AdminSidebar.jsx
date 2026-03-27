@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Search, ShieldAlert } from 'lucide-react';
+import { Search, ShieldAlert, MessageSquare } from 'lucide-react';
 
 const AdminSidebar = () => {
     const navigate = useNavigate();
@@ -8,6 +8,7 @@ const AdminSidebar = () => {
 
     const menuItems = [
         { label: 'Global Search', path: '/', icon: Search },
+        { label: 'Conversations', path: '/admin/conversations', icon: MessageSquare },
         { label: 'Kill Switch', path: '/admin/kill-switch', icon: ShieldAlert }
     ];
 

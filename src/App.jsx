@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage'
 import ChatPage from './pages/ChatPage'
 import DashboardPage from './pages/DashboardPage'
 import KillSwitchPage from './pages/KillSwitchPage'
+import AdminConvoPage from './pages/AdminConvoPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
 
@@ -116,6 +117,17 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <KillSwitchPage />
+               </Layout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/admin/conversations" 
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AdminConvoPage />
                </Layout>
             </ProtectedRoute>
           } 
