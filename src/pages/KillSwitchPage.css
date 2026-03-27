@@ -1,0 +1,139 @@
+.admin-page-layout {
+    display: flex;
+    min-height: calc(100vh - 60px);
+    background: #f8fafc;
+}
+
+.kill-switch-container {
+    flex: 1;
+    padding: 4rem 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.ks-header { margin-bottom: 3rem; text-align: center; }
+.ks-header h1 { font-size: 2.5rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; }
+.ks-header p { color: #64748b; font-size: 1.125rem; max-width: 600px; margin: 0 auto; }
+
+.ks-card {
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 32px; padding: 4rem;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative; overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ks-card.active-shutdown { border-color: #ef4444; background: #fffafa; box-shadow: 0 20px 25px -5px rgba(239, 68, 68, 0.1); }
+.ks-icon-wrapper { margin-bottom: 2rem; }
+.ks-icon { transition: all 0.3s; }
+.active-normal .ks-icon { color: #10b981; }
+.active-shutdown .ks-icon { color: #ef4444; }
+.alert-pulse { animation: pulse-red 2s infinite; }
+
+@keyframes pulse-red { 
+    0% { transform: scale(1); opacity: 1; } 
+    50% { transform: scale(1.1); opacity: 0.8; } 
+    100% { transform: scale(1); opacity: 1; } 
+}
+
+.ks-status-info h2 { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.75rem; }
+.active-normal h2 { color: #1e293b; }
+.active-shutdown h2 { color: #ef4444; }
+.status-desc { color: #64748b; margin-bottom: 2rem; font-size: 1rem; line-height: 1.5; }
+
+.status-timestamp {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    background: #f8fafc;
+    padding: 0.5rem 1rem;
+    border-radius: 100px;
+    display: inline-block;
+    margin-bottom: 3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.ks-big-btn {
+    padding: 1.25rem 3rem; border-radius: 20px; font-weight: 800; font-size: 1rem;
+    cursor: pointer; transition: all 0.2s; border: none; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.btn-disable { background: #ef4444; color: #fff; box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3); }
+.btn-disable:hover { background: #dc2626; transform: translateY(-2px); }
+.btn-enable { background: #10b981; color: #fff; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3); }
+.btn-enable:hover { background: #059669; transform: translateY(-2px); }
+
+.ks-warning-overlay {
+    margin-top: 1.5rem;
+    color: #ef4444;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Logs Section */
+.ks-logs-section {
+    margin-top: 3rem; background: #fff; border: 1px solid #e2e8f0; border-radius: 24px; overflow: hidden;
+}
+.logs-header { padding: 1.5rem 2rem; border-bottom: 1px solid #f1f5f9; background: #fafafa; }
+.logs-header h3 { font-size: 1.125rem; font-weight: 700; color: #1e293b; margin: 0; }
+
+.logs-table-wrapper { width: 100%; overflow-x: auto; }
+.logs-table { width: 100%; border-collapse: collapse; text-align: left; }
+.logs-table th { padding: 1rem 2rem; font-size: 0.6875rem; font-weight: 800; color: #94a3b8; letter-spacing: 0.05em; border-bottom: 1px solid #f1f5f9; }
+.logs-table td { padding: 1.25rem 2rem; font-size: 0.875rem; color: #475569; border-bottom: 1px solid #f8fafc; }
+
+.timestamp { font-weight: 600; color: #1e293b; }
+.admin-log-user { display: flex; flex-direction: column; gap: 0.125rem; }
+.log-user-name { font-weight: 700; color: #1e293b; }
+.log-user-email { font-size: 0.75rem; color: #94a3b8; }
+
+.log-action-badge {
+    display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; border-radius: 100px;
+    font-size: 0.75rem; font-weight: 800; letter-spacing: 0.025em;
+}
+.log-action-badge.shutdown { background: #fef2f2; color: #ef4444; border: 1px solid #fee2e2; }
+.log-action-badge.enable { background: #f0fdf4; color: #10b981; border: 1px solid #dcfce7; }
+
+.log-status { font-weight: 800; color: #64748b; font-size: 0.75rem; }
+
+/* Modal Styles */
+.ks-modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center; z-index: 2000;
+    padding: 1rem;
+}
+
+.ks-modal {
+    background: #fff; border-radius: 24px; width: 100%; max-width: 480px; overflow: hidden;
+    animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes modalPop { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+.ks-modal-header { padding: 1.5rem 2rem; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 1rem; }
+.ks-modal-header h3 { font-size: 1.25rem; font-weight: 700; color: #1e293b; flex: 1; }
+.ks-modal-body { padding: 2rem; color: #475569; font-size: 1rem; line-height: 1.6; }
+.ks-modal-footer { padding: 1.5rem 2rem; background: #f8fafc; display: flex; justify-content: flex-end; gap: 1rem; border-top: 1px solid #f1f5f9; }
+
+.ks-btn-secondary { padding: 0.75rem 1.5rem; border-radius: 12px; background: #fff; border: 1px solid #e2e8f0; color: #475569; font-weight: 700; cursor: pointer; }
+.ks-btn-primary { padding: 0.75rem 1.5rem; border-radius: 12px; border: none; color: #fff; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.ks-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+.bg-red { background: #ef4444; } .bg-red:hover { background: #dc2626; }
+.bg-green { background: #10b981; } .bg-green:hover { background: #059669; }
+.text-red { color: #ef4444; } .text-green { color: #10b981; }
+.ks-close-btn { background: none; border: none; color: #94a3b8; cursor: pointer; padding: 0.5rem; border-radius: 8px; }
+.ks-close-btn:hover { background: #f1f5f9; color: #1e293b; }
+
+.ks-error, .ks-success {
+    position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 2rem; border-radius: 12px; font-weight: 700; color: #fff; animation: slideIn 0.3s ease-out; z-index: 3000;
+}
+.ks-error { background: #ef4444; } .ks-success { background: #10b981; }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+.kill-switch-loader { display: flex; align-items: center; justify-content: center; min-height: 60vh; color: #6366f1; }
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }

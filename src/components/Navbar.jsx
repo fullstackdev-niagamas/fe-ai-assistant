@@ -6,7 +6,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const [showDropdown, setShowDropdown] = useState(false);
+    const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -49,7 +49,7 @@ const Navbar = () => {
                 {filteredNavItems.map((item) => (
                     <div 
                         key={item.path}
-                        className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
+                        className={`nav-link ${location.pathname === item.path || (item.path === '/' && location.pathname.startsWith('/admin')) ? 'active' : ''}`}
                         onClick={() => navigate(item.path)}
                     >
                         <item.icon size={18} />
@@ -62,7 +62,7 @@ const Navbar = () => {
                 <div className="user-profile-wrapper">
                     <div 
                         className="user-profile-trigger"
-                        onClick={() => setShowDropdown(!showDropdown)}
+                        onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                     >
                         <div className="user-info">
                             <span className="user-name">{user.name || user.username || 'User'}</span>
@@ -79,7 +79,7 @@ const Navbar = () => {
                         </div>
                     </div>
 
-                    {showDropdown && (
+                    {showProfileDropdown && (
                         <div className="profile-dropdown shadow-lg">
                             <div className="dropdown-header">
                                 <p className="email">{user.email}</p>
@@ -110,12 +110,12 @@ const Navbar = () => {
                 }
 
                 .navbar-left, .navbar-right {
-                    flex: 0 0 200px;
+                    flex: 0 0 240px;
                 }
 
-                .navbar-right {
+                .navbar-left {
                     display: flex;
-                    justify-content: flex-end;
+                    align-items: center;
                 }
 
                 .navbar-logo {
@@ -123,18 +123,10 @@ const Navbar = () => {
                     align-items: center;
                     gap: 0.5rem;
                     cursor: pointer;
-                    width: fit-content;
                 }
 
-                .logo-icon-simple {
-                    color: #6366f1;
-                }
-
-                .logo-text {
-                    font-weight: 700;
-                    font-size: 1.125rem;
-                    color: #1e293b;
-                }
+                .logo-icon-simple { color: #6366f1; }
+                .logo-text { font-weight: 700; font-size: 1.125rem; color: #1e293b; }
 
                 .nav-links-centered {
                     flex: 1;
@@ -169,6 +161,7 @@ const Navbar = () => {
 
                 .navbar-right {
                     display: flex;
+                    justify-content: flex-end;
                     align-items: center;
                 }
 
@@ -197,17 +190,8 @@ const Navbar = () => {
                     line-height: 1.3;
                 }
 
-                .user-name {
-                    font-size: 0.8125rem;
-                    font-weight: 600;
-                    color: #1e293b;
-                }
-
-                .user-role {
-                    font-size: 0.6875rem;
-                    font-weight: 500;
-                    color: #64748b;
-                }
+                .user-name { font-size: 0.8125rem; font-weight: 600; color: #1e293b; }
+                .user-role { font-size: 0.6875rem; font-weight: 500; color: #64748b; }
 
                 .user-avatar {
                     width: 32px;
@@ -217,19 +201,12 @@ const Navbar = () => {
                     border: 1px solid #e2e8f0;
                 }
 
-                .user-avatar img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
+                .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
                 .avatar-placeholder {
-                    width: 100%;
-                    height: 100%;
+                    width: 100%; height: 100%;
                     background: transparent;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
+                    display: flex; align-items: center; justify-content: center;
                     color: #94a3b8;
                 }
 
@@ -243,29 +220,18 @@ const Navbar = () => {
                     padding: 0.4rem;
                     border: 1px solid rgba(0,0,0,0.06);
                     box-shadow: 0 12px 24px -6px rgba(0,0,0,0.08);
-                    animation: slideDown 0.15s ease-out;
+                    animation: slideDownUp 0.15s ease-out;
                 }
 
-                @keyframes slideDown {
+                @keyframes slideDownUp {
                     from { transform: translateY(-8px); opacity: 0; }
                     to { transform: translateY(0); opacity: 1; }
                 }
 
-                .dropdown-header {
-                    padding: 0.6rem 0.8rem;
-                }
+                .dropdown-header { padding: 0.6rem 0.8rem; }
+                .dropdown-header .email { font-size: 0.6875rem; color: #94a3b8; word-break: break-all; }
 
-                .dropdown-header .email {
-                    font-size: 0.6875rem;
-                    color: #94a3b8;
-                    word-break: break-all;
-                }
-
-                .dropdown-divider {
-                    height: 1px;
-                    background: #f1f5f9;
-                    margin: 0.4rem 0;
-                }
+                .dropdown-divider { height: 1px; background: #f1f5f9; margin: 0.4rem 0; }
 
                 .dropdown-item {
                     display: flex;
@@ -283,9 +249,7 @@ const Navbar = () => {
                     text-align: left;
                 }
 
-                .dropdown-item:hover {
-                    background: #f1f5f9;
-                }
+                .dropdown-item:hover { background: #f1f5f9; }
             `}</style>
         </nav>
     );

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Loader2, MessageSquare, User, Calendar, ExternalLink, Filter } from 'lucide-react';
+import { Search, Loader2, MessageSquare, Calendar, ExternalLink, Filter } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import AdminSidebar from '../components/AdminSidebar';
 import './DashboardPage.css';
 
 const DashboardPage = () => {
@@ -70,7 +71,9 @@ const DashboardPage = () => {
     };
 
     return (
-        <div className="dashboard-container">
+        <div className="admin-page-layout">
+            <AdminSidebar />
+            <div className="dashboard-container">
             <header className="dash-header">
                 <div>
                     <h1>Admin Dashboard</h1>
@@ -173,8 +176,8 @@ const DashboardPage = () => {
                     </div>
                 )}
             </div>
-
         </div>
+    </div>
     );
 };
 

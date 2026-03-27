@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginPage from './pages/LoginPage'
 import ChatPage from './pages/ChatPage'
 import DashboardPage from './pages/DashboardPage'
+import KillSwitchPage from './pages/KillSwitchPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
 
@@ -105,6 +106,17 @@ function App() {
               <Layout>
                 <ChatPage />
               </Layout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/admin/kill-switch" 
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <KillSwitchPage />
+               </Layout>
             </ProtectedRoute>
           } 
         />
