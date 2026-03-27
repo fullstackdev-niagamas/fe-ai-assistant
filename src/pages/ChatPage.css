@@ -410,6 +410,146 @@
     border: 2px solid #6366f1; 
 }
 
+/* Interviewer / Clarification Mode */
+.message-wrapper.interviewer {
+    max-width: 600px;
+    margin-top: 1rem;
+    animation: slideUpFade 0.4s ease-out;
+}
+
+@keyframes slideUpFade {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.interviewer-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 1.5rem;
+    width: 100%;
+}
+
+.interviewer-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 1rem;
+}
+
+.interviewer-header h3 {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 0.25rem 0;
+}
+
+.interviewer-header p {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.interviewer-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.interview-question {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.interview-question p {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #334155;
+    margin: 0;
+}
+
+.option-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.option-chip {
+    padding: 0.5rem 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.option-chip:hover {
+    border-color: #6366f1;
+    color: #6366f1;
+    background: #fff;
+}
+
+.option-chip.selected {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    color: #3b82f6;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+}
+
+.interviewer-footer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.skip-btn {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #94a3b8;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.skip-btn:hover {
+    color: #ef4444;
+}
+
+.submit-interview-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #6366f1;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.submit-interview-btn:disabled {
+    background: #e2e8f0;
+    cursor: not-allowed;
+}
+
+.submit-interview-btn:not(:disabled):hover {
+    background: #4f46e5;
+    transform: translateX(4px);
+}
+
 .chat-input-wrapper { 
     padding: 1rem 2rem 2rem; 
 }

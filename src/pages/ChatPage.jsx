@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import { Send, Plus, MessageCircle, MoreVertical, Trash2, Edit2, Bot, User, Loader2, X, Search } from 'lucide-react';
+import { Send, Plus, MessageCircle, MoreVertical, Trash2, Edit2, Bot, User, Loader2, X, Search, HelpCircle, ChevronRight } from 'lucide-react';
 import './ChatPage.css';
 
 const ChatPage = () => {
@@ -20,6 +20,7 @@ const ChatPage = () => {
     const [isSearching, setIsSearching] = useState(false);
     const [targetMessageId, setTargetMessageId] = useState(null);
     const [modelName, setModelName] = useState('');
+    const [clarificationData, setClarificationData] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams();
     
     const messagesEndRef = useRef(null);
@@ -190,6 +191,16 @@ const ChatPage = () => {
                 conversationId: selectedConvo.id
             });
             
+            if (response.data.type === 'clarification') {
+                setClarificationData({
+                    questions: response.data.questions,
+                    originalPrompt: userMsg,
+                    answers: {}
+                });
+                return;
+            }
+
+            setClarificationData(null); // Clear on success
             if (response.data.newTitle) {
                 setConversations(prev => prev.map(c => 
                     c.id === selectedConvo.id ? { ...c, title: response.data.newTitle } : c
@@ -203,6 +214,31 @@ const ChatPage = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleAnswerClarification = async (questionId, option) => {
+        const updatedAnswers = { ...clarificationData.answers, [questionId]: option };
+        
+        // If all questions answered, auto-submit
+        if (Object.keys(updatedAnswers).length === clarificationData.questions.length) {
+            submitClarification(updatedAnswers);
+        } else {
+            setClarificationData(prev => ({ ...prev, answers: updatedAnswers }));
+        }
+    };
+
+    const submitClarification = async (answers) => {
+        let finalPrompt = `Original Request: ${clarificationData.originalPrompt}\n\nAdditional Context:`;
+        clarificationData.questions.forEach(q => {
+            finalPrompt += `\n- ${q.question}: ${answers[q.id] || 'N/A'}`;
+        });
+
+        // Set state for real-time update
+        setClarificationData(null);
+        setInput(finalPrompt);
+        // We simulate a send message immediately
+        const event = { preventDefault: () => {} };
+        setTimeout(() => handleSendMessage(event), 10);
     };
 
     const handleKeyDown = (e) => {
@@ -379,6 +415,51 @@ const ChatPage = () => {
                                 <div className="message-wrapper model">
                                     <div className="message-avatar"><Bot size={20} /></div>
                                     <div className="message-bubble typing"><div className="dot-flashing"></div></div>
+                                </div>
+                            )}
+                            {clarificationData && (
+                                <div className="message-wrapper model interviewer">
+                                    <div className="message-avatar bot-interview">
+                                        <Bot size={20} />
+                                    </div>
+                                    <div className="interviewer-card shadow-lg">
+                                        <div className="interviewer-header">
+                                            <HelpCircle size={18} className="text-indigo-500" />
+                                            <div>
+                                                <h3>Interviewer Mode</h3>
+                                                <p>Help me understand your request better to provide the best output.</p>
+                                            </div>
+                                        </div>
+                                        <div className="interviewer-body">
+                                            {clarificationData.questions.map((q) => (
+                                                <div key={q.id} className="interview-question">
+                                                    <p>{q.question}</p>
+                                                    <div className="option-chips">
+                                                        {q.options.map(opt => (
+                                                            <button 
+                                                                key={opt} 
+                                                                className={`option-chip ${clarificationData.answers[q.id] === opt ? 'selected' : ''}`}
+                                                                onClick={() => handleAnswerClarification(q.id, opt)}
+                                                            >
+                                                                {opt}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="interviewer-footer">
+                                            <button className="skip-btn" onClick={() => setClarificationData(null)}>Skip Interview</button>
+                                            <button 
+                                                className="submit-interview-btn" 
+                                                disabled={Object.keys(clarificationData.answers).length === 0}
+                                                onClick={() => submitClarification(clarificationData.answers)}
+                                            >
+                                                <span>Send with context</span>
+                                                <ChevronRight size={14} />
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                             <div ref={messagesEndRef} />
