@@ -5,6 +5,7 @@ import ChatPage from './pages/ChatPage'
 import DashboardPage from './pages/DashboardPage'
 import KillSwitchPage from './pages/KillSwitchPage'
 import AdminConvoPage from './pages/AdminConvoPage'
+import ModelControlPage from './pages/ModelControlPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
 
@@ -128,6 +129,17 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <AdminConvoPage />
+               </Layout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/admin/model-config" 
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ModelControlPage />
                </Layout>
             </ProtectedRoute>
           } 

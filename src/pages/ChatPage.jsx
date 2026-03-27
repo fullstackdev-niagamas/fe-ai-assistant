@@ -19,6 +19,7 @@ const ChatPage = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [targetMessageId, setTargetMessageId] = useState(null);
+    const [modelName, setModelName] = useState('');
     const [searchParams, setSearchParams] = useSearchParams();
     
     const messagesEndRef = useRef(null);
@@ -36,6 +37,7 @@ const ChatPage = () => {
 
     useEffect(() => {
         fetchConversations();
+        fetchModelInfo();
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
                 setShowMenu(false);
@@ -101,6 +103,15 @@ const ChatPage = () => {
     const showToast = (message, type = 'error') => {
         setToast({ show: true, message, type });
         setTimeout(() => setToast({ show: false, message: '', type: 'error' }), 3000);
+    };
+
+    const fetchModelInfo = async () => {
+        try {
+            const response = await api.get('/api/model-info');
+            setModelName(response.data.model);
+        } catch (err) {
+            console.error('Error fetching model info:', err);
+        }
     };
 
     const fetchConversations = async () => {
@@ -342,7 +353,9 @@ const ChatPage = () => {
                 {selectedConvo ? (
                     <>
                         <div className="chat-header">
-                            <div className="header-info"><span className="title">{selectedConvo.title}</span><span className="status">Active Session</span></div>
+                            <div className="header-info">
+                                <span className="title">{selectedConvo.title}</span>
+                            </div>
                             <div className="header-menu-wrapper" ref={menuRef}>
                                 <button className="icon-btn-no-border" onClick={() => setShowMenu(!showMenu)}><MoreVertical size={20} /></button>
                                 {showMenu && (
@@ -375,6 +388,9 @@ const ChatPage = () => {
                                 <textarea ref={textareaRef} rows="1" placeholder="Ask anything..." value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} disabled={loading} />
                                 <button type="submit" className="send-btn" disabled={!input.trim() || loading}><Send size={18} /></button>
                             </form>
+                            <div className="chat-footer-meta">
+                                {modelName && <span className="model-name">Powered by <strong>{modelName}</strong></span>}
+                            </div>
                         </div>
                     </>
                 ) : (
