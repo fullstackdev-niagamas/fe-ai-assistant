@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { LogOut, User, Bot } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { LogOut, User, Bot, LayoutDashboard, MessageSquare } from 'lucide-react';
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const [showDropdown, setShowDropdown] = useState(false);
 
@@ -22,12 +23,30 @@ const Navbar = () => {
         return roles[role] || role;
     };
 
+    const navItems = [
+        { label: 'Home', path: '/', icon: LayoutDashboard },
+        { label: 'Chat', path: '/chat', icon: MessageSquare }
+    ];
+
     return (
         <nav className="main-navbar">
             <div className="navbar-left">
                 <div className="navbar-logo" onClick={() => navigate('/')}>
                     <Bot className="logo-icon-simple" size={24} />
                     <span className="logo-text">AI Assistant</span>
+                </div>
+                
+                <div className="nav-links">
+                    {navItems.map((item) => (
+                        <div 
+                            key={item.path}
+                            className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
+                            onClick={() => navigate(item.path)}
+                        >
+                            <item.icon size={18} />
+                            <span>{item.label}</span>
+                        </div>
+                    ))}
                 </div>
             </div>
 
@@ -82,6 +101,12 @@ const Navbar = () => {
                     height: 60px;
                 }
 
+                .navbar-left {
+                    display: flex;
+                    align-items: center;
+                    gap: 3rem;
+                }
+
                 .navbar-logo {
                     display: flex;
                     align-items: center;
@@ -97,6 +122,35 @@ const Navbar = () => {
                     font-weight: 700;
                     font-size: 1.125rem;
                     color: #1e293b;
+                }
+
+                .nav-links {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                }
+
+                .nav-link {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 0.5rem 1rem;
+                    border-radius: 10px;
+                    color: #64748b;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+
+                .nav-link:hover {
+                    color: #1e293b;
+                    background: #f1f5f9;
+                }
+
+                .nav-link.active {
+                    color: #6366f1;
+                    background: rgba(99, 102, 241, 0.08);
                 }
 
                 .navbar-right {

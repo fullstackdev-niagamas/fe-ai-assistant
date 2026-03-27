@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
+import ChatPage from './pages/ChatPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
 
@@ -40,15 +41,13 @@ const Layout = ({ children }) => {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          padding: 2rem;
         }
 
         .container {
-          max-width: 1200px;
-          margin: 0 auto;
+          width: 100%;
+          height: 100%;
           display: flex;
-          justify-content: center;
-          align-items: center;
+          flex-direction: column;
         }
 
         .simple-welcome {
@@ -84,9 +83,20 @@ function App() {
           element={
             <ProtectedRoute>
               <Layout>
-                <div className="simple-welcome">
+                <div className="simple-welcome" style={{ padding: '4rem 2rem' }}>
                   <h1>Welcome to your AI assistant space</h1>
                 </div>
+              </Layout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/chat" 
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ChatPage />
               </Layout>
             </ProtectedRoute>
           } 
