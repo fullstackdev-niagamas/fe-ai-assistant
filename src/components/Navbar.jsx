@@ -24,30 +24,38 @@ const Navbar = () => {
     };
 
     const navItems = [
-        { label: 'Home', path: '/', icon: LayoutDashboard },
+        { label: user.role === 'super_admin' ? 'Dashboard' : 'Home', path: '/', icon: LayoutDashboard },
         { label: 'Chat', path: '/chat', icon: MessageSquare }
     ];
+
+    // Filter nav items based on user role requirements
+    const filteredNavItems = navItems.filter(item => {
+        if (item.path === '/') {
+            return user.role === 'super_admin';
+        }
+        return true;
+    });
 
     return (
         <nav className="main-navbar">
             <div className="navbar-left">
-                <div className="navbar-logo" onClick={() => navigate('/')}>
+                <div className="navbar-logo" onClick={() => navigate(user.role === 'super_admin' ? '/' : '/chat')}>
                     <Bot className="logo-icon-simple" size={24} />
                     <span className="logo-text">AI Assistant</span>
                 </div>
-                
-                <div className="nav-links">
-                    {navItems.map((item) => (
-                        <div 
-                            key={item.path}
-                            className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
-                            onClick={() => navigate(item.path)}
-                        >
-                            <item.icon size={18} />
-                            <span>{item.label}</span>
-                        </div>
-                    ))}
-                </div>
+            </div>
+
+            <div className="nav-links-centered">
+                {filteredNavItems.map((item) => (
+                    <div 
+                        key={item.path}
+                        className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
+                        onClick={() => navigate(item.path)}
+                    >
+                        <item.icon size={18} />
+                        <span>{item.label}</span>
+                    </div>
+                ))}
             </div>
 
             <div className="navbar-right">
@@ -57,12 +65,12 @@ const Navbar = () => {
                         onClick={() => setShowDropdown(!showDropdown)}
                     >
                         <div className="user-info">
-                            <span className="user-name">{user.username || 'User'}</span>
+                            <span className="user-name">{user.name || user.username || 'User'}</span>
                             <span className="user-role">{formatRole(user.role) || 'Super Admin'}</span>
                         </div>
                         <div className="user-avatar">
                             {user.picture ? (
-                                <img src={user.picture} alt={user.username} />
+                                <img src={user.picture} alt={user.name} />
                             ) : (
                                 <div className="avatar-placeholder">
                                     <User size={18} />
@@ -101,10 +109,13 @@ const Navbar = () => {
                     height: 60px;
                 }
 
-                .navbar-left {
+                .navbar-left, .navbar-right {
+                    flex: 0 0 200px;
+                }
+
+                .navbar-right {
                     display: flex;
-                    align-items: center;
-                    gap: 3rem;
+                    justify-content: flex-end;
                 }
 
                 .navbar-logo {
@@ -112,6 +123,7 @@ const Navbar = () => {
                     align-items: center;
                     gap: 0.5rem;
                     cursor: pointer;
+                    width: fit-content;
                 }
 
                 .logo-icon-simple {
@@ -124,10 +136,12 @@ const Navbar = () => {
                     color: #1e293b;
                 }
 
-                .nav-links {
+                .nav-links-centered {
+                    flex: 1;
                     display: flex;
                     align-items: center;
-                    gap: 1rem;
+                    justify-content: center;
+                    gap: 1.5rem;
                 }
 
                 .nav-link {

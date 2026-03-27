@@ -2,8 +2,17 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import ChatPage from './pages/ChatPage'
+import DashboardPage from './pages/DashboardPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
+
+const RootRoute = () => {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  if (user.role === 'super_admin') {
+    return <DashboardPage />;
+  }
+  return <Navigate to="/chat" />;
+};
 
 const Layout = ({ children }) => {
   return (
@@ -39,8 +48,8 @@ const Layout = ({ children }) => {
           flex: 1;
           display: flex;
           flex-direction: column;
-          align-items: center;
-          justify-content: center;
+          align-items: stretch;
+          justify-content: flex-start;
         }
 
         .container {
@@ -83,9 +92,7 @@ function App() {
           element={
             <ProtectedRoute>
               <Layout>
-                <div className="simple-welcome" style={{ padding: '4rem 2rem' }}>
-                  <h1>Welcome to your AI assistant space</h1>
-                </div>
+                <RootRoute />
               </Layout>
             </ProtectedRoute>
           } 
