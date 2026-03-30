@@ -5,7 +5,14 @@ import { LogOut, User, Bot, LayoutDashboard, MessageSquare } from 'lucide-react'
 const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const user = (() => {
+        try {
+            return JSON.parse(localStorage.getItem('user') || '{}');
+        } catch (e) {
+            return {};
+        }
+    })();
+
     const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
     const handleLogout = () => {
@@ -47,7 +54,7 @@ const Navbar = () => {
 
             <div className="nav-links-centered">
                 {filteredNavItems.map((item) => (
-                    <div 
+                    <div
                         key={item.path}
                         className={`nav-link ${location.pathname === item.path || (item.path === '/' && location.pathname.startsWith('/admin')) ? 'active' : ''}`}
                         onClick={() => navigate(item.path)}
@@ -60,17 +67,31 @@ const Navbar = () => {
 
             <div className="navbar-right">
                 <div className="user-profile-wrapper">
-                    <div 
+                    <div
                         className="user-profile-trigger"
                         onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                     >
                         <div className="user-info">
-                            <span className="user-name">{user.name || user.username || 'User'}</span>
+                            <span className="user-name">
+                                {typeof (user.name || user.username) === 'string' 
+                                    ? (user.name || user.username) 
+                                    : 'User'}
+                            </span>
                             <span className="user-role">{formatRole(user.role) || 'Super Admin'}</span>
                         </div>
                         <div className="user-avatar">
-                            {user.picture ? (
-                                <img src={user.picture} alt={user.name} />
+                            {user.picture && typeof user.picture === 'string' ? (
+                                <img 
+                                    src={user.picture} 
+                                    alt={typeof user.name === 'string' ? user.name : 'User'} 
+                                    referrerPolicy="no-referrer"
+                                />
+                            ) : user.picture && typeof user.picture === 'object' && user.picture.url ? (
+                                <img 
+                                    src={user.picture.url} 
+                                    alt={typeof user.name === 'string' ? user.name : 'User'} 
+                                    referrerPolicy="no-referrer"
+                                />
                             ) : (
                                 <div className="avatar-placeholder">
                                     <User size={18} />
@@ -82,7 +103,9 @@ const Navbar = () => {
                     {showProfileDropdown && (
                         <div className="profile-dropdown shadow-lg">
                             <div className="dropdown-header">
-                                <p className="email">{user.email}</p>
+                                <p className="email">
+                                    {typeof user.email === 'string' ? user.email : ''}
+                                </p>
                             </div>
                             <div className="dropdown-divider"></div>
                             <button className="dropdown-item" onClick={handleLogout}>

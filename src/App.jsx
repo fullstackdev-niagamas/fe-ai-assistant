@@ -10,7 +10,14 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
 
 const RootRoute = () => {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('user') || '{}');
+    } catch (e) {
+      return {};
+    }
+  })();
+  
   if (user.role === 'super_admin') {
     return <DashboardPage />;
   }

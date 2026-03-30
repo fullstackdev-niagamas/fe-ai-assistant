@@ -77,8 +77,8 @@ const AdminConvoPage = () => {
 
     const filteredConvos = conversations.filter(c => 
         c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.user_email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.user_name.toLowerCase().includes(searchQuery.toLowerCase())
+        (c.user_email && typeof c.user_email === 'string' && c.user_email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (c.user_name && typeof c.user_name === 'string' && c.user_name.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
     return (
@@ -114,7 +114,9 @@ const AdminConvoPage = () => {
                                 >
                                     <div className="convo-user-info">
                                         <div className="user-avatar-mini">
-                                            {convo.user_picture ? <img src={convo.user_picture} alt="" /> : convo.user_name[0]}
+                                            {convo.user_picture && typeof convo.user_picture === 'string' ? (
+                                                <img src={convo.user_picture} alt="" referrerPolicy="no-referrer" />
+                                            ) : (typeof convo.user_name === 'string' ? convo.user_name[0] : 'U')}
                                         </div>
                                         <div className="user-text">
                                             <span className="user-name">{convo.user_name}</span>
@@ -144,11 +146,13 @@ const AdminConvoPage = () => {
                                 </div>
                                 <div className="user-card-mini">
                                     <div className="user-avatar-mini">
-                                        {selectedConvo.user_picture ? <img src={selectedConvo.user_picture} alt="" /> : selectedConvo.user_name[0]}
+                                        {selectedConvo.user_picture && typeof selectedConvo.user_picture === 'string' ? (
+                                            <img src={selectedConvo.user_picture} alt="" referrerPolicy="no-referrer" />
+                                        ) : (typeof selectedConvo.user_name === 'string' ? selectedConvo.user_name[0] : 'U')}
                                     </div>
                                     <div className="user-text">
-                                        <span className="name">{selectedConvo.user_name}</span>
-                                        <span className="email">{selectedConvo.user_email}</span>
+                                        <span className="name">{typeof selectedConvo.user_name === 'string' ? selectedConvo.user_name : 'User'}</span>
+                                        <span className="email">{typeof selectedConvo.user_email === 'string' ? selectedConvo.user_email : ''}</span>
                                     </div>
                                 </div>
                             </div>
@@ -157,7 +161,11 @@ const AdminConvoPage = () => {
                                 {messages.map((msg, i) => (
                                     <div key={msg.id || i} className={`admin-message-wrapper ${msg.role}`}>
                                         <div className="msg-avatar">
-                                            {msg.role === 'model' ? <Bot size={20} /> : (selectedConvo.user_picture ? <img src={selectedConvo.user_picture} alt="" /> : <User size={20} />)}
+                                            {msg.role === 'model' ? (
+                                                <Bot size={20} />
+                                            ) : (selectedConvo.user_picture && typeof selectedConvo.user_picture === 'string' ? (
+                                                <img src={selectedConvo.user_picture} alt="" referrerPolicy="no-referrer" />
+                                            ) : <User size={20} />)}
                                         </div>
                                         <div className="msg-bubble">
                                             <div className="msg-content">{formatMarkdown(msg.content)}</div>

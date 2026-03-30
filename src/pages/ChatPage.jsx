@@ -406,8 +406,18 @@ const ChatPage = () => {
                             {messages.map((msg, i) => (
                                 <div key={msg.id || i} id={`msg-${msg.id}`} className={`message-wrapper ${msg.role}`}>
                                     <div className="message-avatar">
-                                        {msg.role === 'model' ? <Bot size={20} /> : (user.picture ? <img src={user.picture} alt="Me" /> : <User size={20} />)}
-                                    </div>
+                                         {msg.role === 'model' ? (
+                                             <Bot size={20} />
+                                         ) : (
+                                             user.picture && typeof user.picture === 'string' ? (
+                                                 <img src={user.picture} alt="Me" referrerPolicy="no-referrer" />
+                                             ) : user.picture && typeof user.picture === 'object' && user.picture.url ? (
+                                                 <img src={user.picture.url} alt="Me" referrerPolicy="no-referrer" />
+                                             ) : (
+                                                 <User size={20} />
+                                             )
+                                         )}
+                                     </div>
                                     <div className="message-bubble"><div className="message-content">{formatMarkdown(msg.content)}</div></div>
                                 </div>
                             ))}
