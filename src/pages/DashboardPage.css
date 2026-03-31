@@ -211,7 +211,7 @@
     letter-spacing: 0.025em; 
 }
 
-.role-tag.super_admin { background: #fef2f2; color: #ef4444; }
+.role-tag.superadmin { background: #fef2f2; color: #ef4444; }
 .role-tag.manager { background: #ecfdf5; color: #10b981; }
 .role-tag.staff { background: #eff6ff; color: #3b82f6; }
 

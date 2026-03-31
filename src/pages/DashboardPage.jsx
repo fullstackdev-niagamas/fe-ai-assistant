@@ -32,7 +32,7 @@ const DashboardPage = () => {
     const handleSearch = async () => {
         setLoading(true);
         try {
-            const res = await api.get(`/api/admin/search?q=${query}&fields=${fields.join(',')}`);
+            const res = await api.get(`/api/ai-assistant/admin/search?q=${query}&fields=${fields.join(',')}`);
             setResults(res.data);
         } catch (err) {
             console.error('Admin Search Error:', err);

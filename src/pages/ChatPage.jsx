@@ -62,6 +62,14 @@ const ChatPage = () => {
         }
     }, [messages, targetMessageId]);
 
+    // Auto-expand textarea
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        }
+    }, [input]);
+
     // Handle initial URL params
     useEffect(() => {
         const convoId = searchParams.get('convoId');
@@ -92,7 +100,7 @@ const ChatPage = () => {
     const handleSearch = async () => {
         try {
             setIsSearching(true);
-            const response = await api.get(`/api/search?q=${searchQuery}`);
+            const response = await api.get(`/api/ai-assistant/search?q=${searchQuery}`);
             setSearchResults(response.data);
         } catch (err) {
             console.error('Search failed:', err);
@@ -108,7 +116,7 @@ const ChatPage = () => {
 
     const fetchModelInfo = async () => {
         try {
-            const response = await api.get('/api/model-info');
+            const response = await api.get('/api/ai-assistant/model-info');
             setModelName(response.data.model);
         } catch (err) {
             console.error('Error fetching model info:', err);
@@ -118,7 +126,7 @@ const ChatPage = () => {
     const fetchConversations = async () => {
         try {
             setSidebarLoading(true);
-            const response = await api.get('/api/conversations');
+            const response = await api.get('/api/ai-assistant/conversations');
             setConversations(response.data);
         } catch (err) {
             console.error('Error fetching conversations:', err);
@@ -129,7 +137,7 @@ const ChatPage = () => {
 
     const fetchMessages = async (convoId) => {
         try {
-            const response = await api.get(`/api/conversations/${convoId}/messages`);
+            const response = await api.get(`/api/ai-assistant/conversations/${convoId}/messages`);
             setMessages(response.data);
         } catch (err) {
             console.error('Error fetching messages:', err);
@@ -162,7 +170,7 @@ const ChatPage = () => {
         }
 
         try {
-            const response = await api.post('/api/conversations', { title: 'New Chat' });
+            const response = await api.post('/api/ai-assistant/conversations', { title: 'New Chat' });
             const existing = conversations.find(c => c.id === response.data.id);
             if (!existing) {
                 setConversations(prev => [response.data, ...prev]);
@@ -186,7 +194,7 @@ const ChatPage = () => {
         setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
 
         try {
-            const response = await api.post('/api/chat', {
+            const response = await api.post('/api/ai-assistant/chat', {
                 prompt: userMsg,
                 conversationId: selectedConvo.id
             });
@@ -218,19 +226,13 @@ const ChatPage = () => {
 
     const handleAnswerClarification = async (questionId, option) => {
         const updatedAnswers = { ...clarificationData.answers, [questionId]: option };
-        
-        // If all questions answered, auto-submit
-        if (Object.keys(updatedAnswers).length === clarificationData.questions.length) {
-            submitClarification(updatedAnswers);
-        } else {
-            setClarificationData(prev => ({ ...prev, answers: updatedAnswers }));
-        }
+        setClarificationData(prev => ({ ...prev, answers: updatedAnswers }));
     };
 
     const submitClarification = async (answers) => {
-        let finalPrompt = `Original Request: ${clarificationData.originalPrompt}\n\nAdditional Context:`;
+        let finalPrompt = `Permintaan Awal: ${clarificationData.originalPrompt}\n\nKonteks Tambahan:`;
         clarificationData.questions.forEach(q => {
-            finalPrompt += `\n- ${q.question}: ${answers[q.id] || 'N/A'}`;
+            finalPrompt += `\n- ${q.question}: ${answers[q.id] || 'Tidak diisi'}`;
         });
 
         // Set state for real-time update
@@ -262,7 +264,7 @@ const ChatPage = () => {
 
     const confirmDelete = async () => {
         try {
-            await api.delete(`/api/conversations/${modal.data.id}`);
+            await api.delete(`/api/ai-assistant/conversations/${modal.data.id}`);
             setConversations(conversations.filter(c => c.id !== modal.data.id));
             if (selectedConvo?.id === modal.data.id) {
                 setSelectedConvo(null);
@@ -279,7 +281,7 @@ const ChatPage = () => {
     const confirmRename = async () => {
         if (!editValue.trim()) return;
         try {
-            await api.put(`/api/conversations/${modal.data.id}`, { title: editValue });
+            await api.put(`/api/ai-assistant/conversations/${modal.data.id}`, { title: editValue });
             setConversations(prev => prev.map(c => c.id === modal.data.id ? { ...c, title: editValue } : c));
             if (selectedConvo?.id === modal.data.id) {
                 setSelectedConvo(prev => ({ ...prev, title: editValue }));
@@ -436,8 +438,8 @@ const ChatPage = () => {
                                         <div className="interviewer-header">
                                             <HelpCircle size={18} className="text-indigo-500" />
                                             <div>
-                                                <h3>Interviewer Mode</h3>
-                                                <p>Help me understand your request better to provide the best output.</p>
+                                                <h3>Mode Interviewer</h3>
+                                                <p>Bantu saya memahami permintaan Anda lebih baik untuk memberikan hasil terbaik.</p>
                                             </div>
                                         </div>
                                         <div className="interviewer-body">
@@ -459,13 +461,13 @@ const ChatPage = () => {
                                             ))}
                                         </div>
                                         <div className="interviewer-footer">
-                                            <button className="skip-btn" onClick={() => setClarificationData(null)}>Skip Interview</button>
+                                            <button className="skip-btn" onClick={() => setClarificationData(null)}>Lewati Interview</button>
                                             <button 
                                                 className="submit-interview-btn" 
                                                 disabled={Object.keys(clarificationData.answers).length === 0}
                                                 onClick={() => submitClarification(clarificationData.answers)}
                                             >
-                                                <span>Send with context</span>
+                                                <span>Kirim dengan konteks</span>
                                                 <ChevronRight size={14} />
                                             </button>
                                         </div>

@@ -33,7 +33,7 @@ const AdminConvoPage = () => {
     const fetchConversations = async () => {
         try {
             setSidebarLoading(true);
-            const response = await api.get('/api/admin/conversations');
+            const response = await api.get('/api/ai-assistant/admin/conversations');
             setConversations(response.data);
         } catch (err) {
             console.error('Error fetching admin conversations:', err);
@@ -45,7 +45,7 @@ const AdminConvoPage = () => {
     const fetchMessages = async (convoId) => {
         try {
             setLoading(true);
-            const response = await api.get(`/api/admin/conversations/${convoId}/messages`);
+            const response = await api.get(`/api/ai-assistant/admin/conversations/${convoId}/messages`);
             setMessages(response.data);
         } catch (err) {
             console.error('Error fetching admin messages:', err);

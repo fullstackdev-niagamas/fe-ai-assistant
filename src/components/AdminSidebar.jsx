@@ -7,7 +7,7 @@ const AdminSidebar = () => {
     const location = useLocation();
 
     const menuItems = [
-        { label: 'Global Search', path: '/', icon: Search },
+        { label: 'Global Search', path: '/admin', icon: Search },
         { label: 'Conversations', path: '/admin/conversations', icon: MessageSquare },
         { label: 'Model Control', path: '/admin/model-config', icon: Settings },
         { label: 'Kill Switch', path: '/admin/kill-switch', icon: ShieldAlert }

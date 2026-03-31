@@ -1,11 +1,14 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
-    const isAuthenticated = !!localStorage.getItem('token');
-    
-    if (!isAuthenticated) {
-        return <Navigate to="/login" replace />;
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+
+    if (!token || !user) {
+        // Redirect to NLG Hub login
+        const hubUrl = import.meta.env.VITE_NLG_HUB_URL || 'http://localhost:5173/nlg-hub';
+        window.location.href = `${hubUrl}/login`;
+        return null;
     }
 
     return children;

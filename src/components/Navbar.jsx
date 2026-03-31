@@ -13,32 +13,26 @@ const Navbar = () => {
         }
     })();
 
-    const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        navigate('/login');
-    };
 
     const formatRole = (role) => {
         const roles = {
             'staff': 'Staff',
             'manager': 'Manager',
-            'super_admin': 'Super Admin'
+            'superadmin': 'Super Admin'
         };
         return roles[role] || role;
     };
 
     const navItems = [
-        { label: user.role === 'super_admin' ? 'Dashboard' : 'Home', path: '/', icon: LayoutDashboard },
+        { label: 'Dashboard', path: '/admin', icon: LayoutDashboard },
         { label: 'Chat', path: '/chat', icon: MessageSquare }
     ];
 
     // Filter nav items based on user role requirements
     const filteredNavItems = navItems.filter(item => {
         if (item.path === '/') {
-            return user.role === 'super_admin';
+            return user.role === 'superadmin';
         }
         return true;
     });
@@ -46,7 +40,7 @@ const Navbar = () => {
     return (
         <nav className="main-navbar">
             <div className="navbar-left">
-                <div className="navbar-logo" onClick={() => navigate(user.role === 'super_admin' ? '/' : '/chat')}>
+                <div className="navbar-logo" onClick={() => navigate(user.role === 'superadmin' ? '/admin' : '/chat')}>
                     <Bot className="logo-icon-simple" size={24} />
                     <span className="logo-text">AI Assistant</span>
                 </div>
@@ -56,7 +50,7 @@ const Navbar = () => {
                 {filteredNavItems.map((item) => (
                     <div
                         key={item.path}
-                        className={`nav-link ${location.pathname === item.path || (item.path === '/' && location.pathname.startsWith('/admin')) ? 'active' : ''}`}
+                        className={`nav-link ${location.pathname.startsWith(item.path) ? 'active' : ''}`}
                         onClick={() => navigate(item.path)}
                     >
                         <item.icon size={18} />
@@ -67,29 +61,26 @@ const Navbar = () => {
 
             <div className="navbar-right">
                 <div className="user-profile-wrapper">
-                    <div
-                        className="user-profile-trigger"
-                        onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                    >
+                    <div className="user-profile-trigger">
                         <div className="user-info">
                             <span className="user-name">
-                                {typeof (user.name || user.username) === 'string' 
-                                    ? (user.name || user.username) 
+                                {typeof (user.fullName || user.name || user.username) === 'string'
+                                    ? (user.fullName || user.name || user.username)
                                     : 'User'}
                             </span>
                             <span className="user-role">{formatRole(user.role) || 'Super Admin'}</span>
                         </div>
                         <div className="user-avatar">
                             {user.picture && typeof user.picture === 'string' ? (
-                                <img 
-                                    src={user.picture} 
-                                    alt={typeof user.name === 'string' ? user.name : 'User'} 
+                                <img
+                                    src={user.picture}
+                                    alt={typeof (user.fullName || user.name) === 'string' ? (user.fullName || user.name) : 'User'}
                                     referrerPolicy="no-referrer"
                                 />
                             ) : user.picture && typeof user.picture === 'object' && user.picture.url ? (
-                                <img 
-                                    src={user.picture.url} 
-                                    alt={typeof user.name === 'string' ? user.name : 'User'} 
+                                <img
+                                    src={user.picture.url}
+                                    alt={typeof (user.fullName || user.name) === 'string' ? (user.fullName || user.name) : 'User'}
                                     referrerPolicy="no-referrer"
                                 />
                             ) : (
@@ -100,20 +91,6 @@ const Navbar = () => {
                         </div>
                     </div>
 
-                    {showProfileDropdown && (
-                        <div className="profile-dropdown shadow-lg">
-                            <div className="dropdown-header">
-                                <p className="email">
-                                    {typeof user.email === 'string' ? user.email : ''}
-                                </p>
-                            </div>
-                            <div className="dropdown-divider"></div>
-                            <button className="dropdown-item" onClick={handleLogout}>
-                                <LogOut size={14} />
-                                <span>Sign Out</span>
-                            </button>
-                        </div>
-                    )}
                 </div>
             </div>
 

@@ -26,7 +26,7 @@ const KillSwitchPage = () => {
     const fetchStatus = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/api/admin/kill-switch');
+            const response = await api.get('/api/ai-assistant/admin/kill-switch');
             setIsActive(response.data.kill_switch);
             setUpdatedAt(response.data.updated_at);
         } catch (err) {
@@ -38,7 +38,7 @@ const KillSwitchPage = () => {
 
     const fetchLogs = async () => {
         try {
-            const response = await api.get('/api/admin/kill-switch/logs');
+            const response = await api.get('/api/ai-assistant/admin/kill-switch/logs');
             setLogs(response.data);
         } catch (err) {
             console.error('Failed to fetch logs');
@@ -59,7 +59,7 @@ const KillSwitchPage = () => {
         try {
             setToggling(true);
             setError('');
-            const response = await api.post('/api/admin/kill-switch', { active: !isActive });
+            const response = await api.post('/api/ai-assistant/admin/kill-switch', { active: !isActive });
             setIsActive(!isActive);
             setUpdatedAt(new Date().toISOString());
             setSuccess(response.data.message);

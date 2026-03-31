@@ -1,6 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import LoginPage from './pages/LoginPage'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import ChatPage from './pages/ChatPage'
 import DashboardPage from './pages/DashboardPage'
 import KillSwitchPage from './pages/KillSwitchPage'
@@ -10,17 +9,6 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
 
 const RootRoute = () => {
-  const user = (() => {
-    try {
-      return JSON.parse(localStorage.getItem('user') || '{}');
-    } catch (e) {
-      return {};
-    }
-  })();
-  
-  if (user.role === 'super_admin') {
-    return <DashboardPage />;
-  }
   return <Navigate to="/chat" />;
 };
 
@@ -93,68 +81,75 @@ const Layout = ({ children }) => {
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        
-        <Route 
-          path="/" 
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <RootRoute />
-              </Layout>
-            </ProtectedRoute>
-          } 
-        />
+    <Routes>
+      <Route 
+        path="/" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <RootRoute />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
 
-        <Route 
-          path="/chat" 
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <ChatPage />
-              </Layout>
-            </ProtectedRoute>
-          } 
-        />
+      <Route 
+        path="/chat" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <ChatPage />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
 
-        <Route 
-          path="/admin/kill-switch" 
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <KillSwitchPage />
-               </Layout>
-            </ProtectedRoute>
-          } 
-        />
+      <Route 
+        path="/admin" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <DashboardPage />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
 
-        <Route 
-          path="/admin/conversations" 
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <AdminConvoPage />
-               </Layout>
-            </ProtectedRoute>
-          } 
-        />
+      <Route 
+        path="/admin/kill-switch" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <KillSwitchPage />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
 
-        <Route 
-          path="/admin/model-config" 
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <ModelControlPage />
-               </Layout>
-            </ProtectedRoute>
-          } 
-        />
+      <Route 
+        path="/admin/conversations" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <AdminConvoPage />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
 
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </Router>
+      <Route 
+        path="/admin/model-config" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <ModelControlPage />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
+
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   )
 }
 

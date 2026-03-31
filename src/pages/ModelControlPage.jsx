@@ -29,7 +29,7 @@ const ModelControlPage = () => {
     const fetchConfig = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/api/admin/model-config');
+            const response = await api.get('/api/ai-assistant/admin/model-config');
             setConfig(response.data);
         } catch (err) {
             setMessage({ text: 'Failed to load configuration', type: 'error' });
@@ -41,7 +41,7 @@ const ModelControlPage = () => {
     const handleSave = async () => {
         try {
             setSaving(true);
-            const response = await api.post('/api/admin/model-config', config);
+            const response = await api.post('/api/ai-assistant/admin/model-config', config);
             setMessage({ text: response.data.message, type: 'success' });
             setTimeout(() => setMessage({ text: '', type: '' }), 3000);
         } catch (err) {
