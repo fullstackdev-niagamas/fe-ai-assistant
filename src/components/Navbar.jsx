@@ -13,13 +13,7 @@ const Navbar = () => {
         }
     })();
 
-    const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        navigate('/login');
-    };
 
     const formatRole = (role) => {
         const roles = {
@@ -67,10 +61,7 @@ const Navbar = () => {
 
             <div className="navbar-right">
                 <div className="user-profile-wrapper">
-                    <div
-                        className="user-profile-trigger"
-                        onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                    >
+                    <div className="user-profile-trigger">
                         <div className="user-info">
                             <span className="user-name">
                                 {typeof (user.name || user.username) === 'string' 
@@ -100,20 +91,6 @@ const Navbar = () => {
                         </div>
                     </div>
 
-                    {showProfileDropdown && (
-                        <div className="profile-dropdown shadow-lg">
-                            <div className="dropdown-header">
-                                <p className="email">
-                                    {typeof user.email === 'string' ? user.email : ''}
-                                </p>
-                            </div>
-                            <div className="dropdown-divider"></div>
-                            <button className="dropdown-item" onClick={handleLogout}>
-                                <LogOut size={14} />
-                                <span>Sign Out</span>
-                            </button>
-                        </div>
-                    )}
                 </div>
             </div>
 

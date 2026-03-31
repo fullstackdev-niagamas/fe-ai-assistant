@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import LoginPage from './pages/LoginPage'
 import ChatPage from './pages/ChatPage'
 import DashboardPage from './pages/DashboardPage'
 import KillSwitchPage from './pages/KillSwitchPage'
@@ -10,17 +9,6 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
 
 const RootRoute = () => {
-  const user = (() => {
-    try {
-      return JSON.parse(localStorage.getItem('user') || '{}');
-    } catch (e) {
-      return {};
-    }
-  })();
-  
-  if (user.role === 'super_admin') {
-    return <DashboardPage />;
-  }
   return <Navigate to="/chat" />;
 };
 
@@ -92,11 +80,21 @@ const Layout = ({ children }) => {
 }
 
 function App() {
+  useEffect(() => {
+    // Set default local admin user if it doesn't exist
+    if (!localStorage.getItem('user')) {
+      localStorage.setItem('user', JSON.stringify({
+        id: 'local-admin',
+        name: 'Local Admin',
+        email: 'admin@workspace.local',
+        role: 'super_admin'
+      }));
+    }
+  }, []);
+
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        
         <Route 
           path="/" 
           element={
@@ -114,6 +112,17 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <ChatPage />
+              </Layout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <DashboardPage />
               </Layout>
             </ProtectedRoute>
           } 

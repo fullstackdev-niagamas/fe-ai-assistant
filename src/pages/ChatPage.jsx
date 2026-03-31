@@ -62,6 +62,14 @@ const ChatPage = () => {
         }
     }, [messages, targetMessageId]);
 
+    // Auto-expand textarea
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        }
+    }, [input]);
+
     // Handle initial URL params
     useEffect(() => {
         const convoId = searchParams.get('convoId');
@@ -218,19 +226,13 @@ const ChatPage = () => {
 
     const handleAnswerClarification = async (questionId, option) => {
         const updatedAnswers = { ...clarificationData.answers, [questionId]: option };
-        
-        // If all questions answered, auto-submit
-        if (Object.keys(updatedAnswers).length === clarificationData.questions.length) {
-            submitClarification(updatedAnswers);
-        } else {
-            setClarificationData(prev => ({ ...prev, answers: updatedAnswers }));
-        }
+        setClarificationData(prev => ({ ...prev, answers: updatedAnswers }));
     };
 
     const submitClarification = async (answers) => {
-        let finalPrompt = `Original Request: ${clarificationData.originalPrompt}\n\nAdditional Context:`;
+        let finalPrompt = `Permintaan Awal: ${clarificationData.originalPrompt}\n\nKonteks Tambahan:`;
         clarificationData.questions.forEach(q => {
-            finalPrompt += `\n- ${q.question}: ${answers[q.id] || 'N/A'}`;
+            finalPrompt += `\n- ${q.question}: ${answers[q.id] || 'Tidak diisi'}`;
         });
 
         // Set state for real-time update
@@ -436,8 +438,8 @@ const ChatPage = () => {
                                         <div className="interviewer-header">
                                             <HelpCircle size={18} className="text-indigo-500" />
                                             <div>
-                                                <h3>Interviewer Mode</h3>
-                                                <p>Help me understand your request better to provide the best output.</p>
+                                                <h3>Mode Interviewer</h3>
+                                                <p>Bantu saya memahami permintaan Anda lebih baik untuk memberikan hasil terbaik.</p>
                                             </div>
                                         </div>
                                         <div className="interviewer-body">
@@ -459,13 +461,13 @@ const ChatPage = () => {
                                             ))}
                                         </div>
                                         <div className="interviewer-footer">
-                                            <button className="skip-btn" onClick={() => setClarificationData(null)}>Skip Interview</button>
+                                            <button className="skip-btn" onClick={() => setClarificationData(null)}>Lewati Interview</button>
                                             <button 
                                                 className="submit-interview-btn" 
                                                 disabled={Object.keys(clarificationData.answers).length === 0}
                                                 onClick={() => submitClarification(clarificationData.answers)}
                                             >
-                                                <span>Send with context</span>
+                                                <span>Kirim dengan konteks</span>
                                                 <ChevronRight size={14} />
                                             </button>
                                         </div>
