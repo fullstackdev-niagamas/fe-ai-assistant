@@ -6,13 +6,16 @@ import './index.css'
 
 const SSOHandler = ({ children }) => {
   const navigate = useNavigate();
+  const urlParams = new URLSearchParams(window.location.search);
+  const tokenInUrl = urlParams.get('token');
+  const [isVerifying, setIsVerifying] = React.useState(!!tokenInUrl);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
 
     if (token) {
       const fetchProfile = async () => {
+        setIsVerifying(true);
         try {
           localStorage.setItem('token', token);
           const nlgHubApiUrl = import.meta.env.VITE_NLG_HUB_API_URL || 'http://localhost:5000';
@@ -24,8 +27,10 @@ const SSOHandler = ({ children }) => {
             const data = await response.json();
             if (data && data.user) {
               localStorage.setItem('user', JSON.stringify(data.user));
-              window.history.replaceState({}, document.title, "/ai-assistant/chat");
+              // Clear token from URL and reload fully to ensure state is clean
+              window.history.replaceState({}, document.title, window.location.pathname);
               window.location.reload();
+              return; // Avoid setting isVerifying to false as we're reloading
             }
           } else {
             console.error("SSO failed: response not ok");
@@ -35,10 +40,44 @@ const SSOHandler = ({ children }) => {
           console.error("SSO failed:", error);
           localStorage.removeItem('token');
         }
+        setIsVerifying(false);
       };
       fetchProfile();
     }
   }, [navigate]);
+
+  if (isVerifying) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        height: '100vh', 
+        width: '100vw', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        flexDirection: 'column',
+        gap: '20px',
+        background: '#f8fafc',
+        fontFamily: 'Inter, sans-serif'
+      }}>
+        <div className="sso-loader"></div>
+        <p style={{ color: '#64748b', fontWeight: '500' }}>Menghubungkan dengan Hub...</p>
+        <style>{`
+          .sso-loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return children;
 };
