@@ -47,7 +47,7 @@ const AdminSidebar = () => {
 
             <div className="sidebar-section-divider" />
 
-            <div className="sidebar-section">
+            <div className="sidebar-section mobile-only">
                 <span className="sidebar-section-label">APPLICATION</span>
                 <div className="sidebar-menu">
                     <div 
@@ -114,7 +114,12 @@ const AdminSidebar = () => {
                         margin-bottom: 0.75rem;
                     }
 
+                    .sidebar-section.mobile-only {
+                        display: none;
+                    }
+
                     .sidebar-section-divider {
+                        display: none;
                         height: 1px;
                         background: #f1f5f9;
                         margin: 0.5rem 1.25rem 1.5rem;
@@ -160,6 +165,13 @@ const AdminSidebar = () => {
                     }
 
                     @media (max-width: 768px) {
+                        .sidebar-section.mobile-only {
+                            display: block;
+                        }
+
+                        .sidebar-section-divider {
+                            display: block;
+                        }
                         .admin-sidebar {
                             position: fixed;
                             left: -100%;

@@ -347,7 +347,7 @@ const ChatPage = () => {
                 </div>
                 <div className="sidebar-list">
                     {user.role === 'superadmin' && (
-                        <div className="global-nav-section">
+                        <div className="global-nav-section mobile-only">
                             <div className="sidebar-nav-item" onClick={() => { navigate('/admin'); setIsSidebarOpen(false); }}>
                                 <LayoutDashboard size={18} />
                                 <span>Dashboard</span>

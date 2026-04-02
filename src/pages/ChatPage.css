@@ -1000,9 +1000,15 @@
     }
 }
 
-.global-nav-section {
+.global-nav-section.mobile-only {
+    display: none;
     margin-bottom: 0.5rem;
 }
+
+@media (max-width: 768px) {
+    .global-nav-section.mobile-only {
+        display: block;
+    }
 
 .sidebar-nav-item {
     display: flex;
@@ -1028,4 +1034,5 @@
     height: 1px;
     background: #f1f5f9;
     margin: 1rem 0.5rem;
+}
 }
