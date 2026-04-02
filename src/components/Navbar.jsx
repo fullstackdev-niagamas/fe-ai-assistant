@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LogOut, User, Bot, LayoutDashboard, MessageSquare, Menu } from 'lucide-react';
+import { LogOut, User, Bot, LayoutDashboard, LayoutGrid, MessageSquare, Menu } from 'lucide-react';
 import { useSidebar } from '../context/SidebarContext';
 
 const Navbar = () => {
@@ -113,6 +113,10 @@ const Navbar = () => {
                                 <div className="email">{user.email}</div>
                             </div>
                             <div className="dropdown-divider" />
+                            <button className="dropdown-item" onClick={() => window.location.href = import.meta.env.VITE_NLG_HUB_URL || 'http://localhost:5173/nlg-hub'}>
+                                <LayoutGrid size={16} color="#6366f1" />
+                                <span style={{ fontWeight: '600' }}>Back to NLG Hub</span>
+                            </button>
                             <button className="dropdown-item logout-btn" onClick={handleLogout}>
                                 <LogOut size={16} color="#ef4444" />
                                 <span style={{ color: '#ef4444', fontWeight: '600' }}>Logout</span>
