@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LogOut, User, Bot, LayoutDashboard, MessageSquare } from 'lucide-react';
+import { User, Bot, LayoutDashboard, MessageSquare, Menu } from 'lucide-react';
+import { useSidebar } from '../context/SidebarContext';
 
 const Navbar = () => {
+    const { toggleSidebar } = useSidebar();
     const navigate = useNavigate();
     const location = useLocation();
     const user = (() => {
@@ -40,6 +42,9 @@ const Navbar = () => {
     return (
         <nav className="main-navbar">
             <div className="navbar-left">
+                <button className="burger-menu-btn" onClick={toggleSidebar}>
+                    <Menu size={24} />
+                </button>
                 <div className="navbar-logo" onClick={() => navigate(user.role === 'superadmin' ? '/admin' : '/chat')}>
                     <Bot className="logo-icon-simple" size={24} />
                     <span className="logo-text">AI Assistant</span>
@@ -116,6 +121,24 @@ const Navbar = () => {
                 .navbar-left {
                     display: flex;
                     align-items: center;
+                    gap: 1rem;
+                }
+
+                .burger-menu-btn {
+                    display: none;
+                    background: none;
+                    border: none;
+                    color: #475569;
+                    cursor: pointer;
+                    padding: 0.5rem;
+                    border-radius: 8px;
+                    transition: background 0.1s;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .burger-menu-btn:hover {
+                    background: #f1f5f9;
                 }
 
                 .navbar-logo {
@@ -250,6 +273,38 @@ const Navbar = () => {
                 }
 
                 .dropdown-item:hover { background: #f1f5f9; }
+
+                @media (max-width: 768px) {
+                    .main-navbar {
+                        padding: 0 1rem;
+                    }
+                    .navbar-left {
+                        flex: 1;
+                        justify-content: flex-start;
+                        gap: 0; /* Let burger handle its own padding */
+                    }
+                    .navbar-right {
+                        flex: 1;
+                        justify-content: flex-end;
+                    }
+                    .burger-menu-btn {
+                        display: flex;
+                    }
+                    .navbar-logo {
+                        position: absolute;
+                        left: 50%;
+                        transform: translateX(-50%);
+                    }
+                    .nav-links-centered {
+                        display: none;
+                    }
+                    .user-info {
+                        display: none;
+                    }
+                    .logo-text {
+                        display: none;
+                    }
+                }
             `}</style>
         </nav>
     );

@@ -888,3 +888,144 @@
     from { transform: rotate(0deg); } 
     to { transform: rotate(360deg); } 
 }
+.header-left-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.menu-toggle-btn {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 8px;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.close-sidebar-mobile {
+    display: none;
+    background: #f1f5f9;
+    border: none;
+    padding: 0.4rem;
+    border-radius: 8px;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.sidebar-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+}
+
+@media (max-width: 768px) {
+    .chat-container {
+        height: calc(100vh - 60px);
+    }
+
+    .chat-sidebar {
+        position: fixed;
+        left: -100%;
+        top: 60px;
+        bottom: 0;
+        z-index: 1000;
+        width: 280px;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    }
+
+    .chat-sidebar.open {
+        left: 0;
+    }
+
+    .sidebar-overlay {
+        display: block;
+    }
+
+    .menu-toggle-btn {
+        display: flex;
+    }
+
+    .close-sidebar-mobile {
+        display: flex;
+    }
+
+    .messages-container {
+        padding: 1rem;
+    }
+
+    .message-wrapper {
+        max-width: 95%;
+    }
+
+    .chat-input-wrapper {
+        padding: 1rem;
+    }
+
+    .chat-header {
+        padding: 0 1rem;
+    }
+
+    .chat-placeholder h1 {
+        font-size: 1.5rem;
+    }
+
+    .placeholder-content {
+        padding: 2rem;
+    }
+
+    .modal-content {
+        max-width: 90%;
+        border-radius: 16px;
+    }
+
+    .toast-message {
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+    }
+}
+
+.global-nav-section {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem;
+    border-radius: 12px;
+    color: #4f46e5;
+    background: #f5f3ff;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    border: 1px solid #ddd6fe;
+}
+
+.sidebar-nav-item:hover {
+    background: #ede9fe;
+    transform: translateX(4px);
+}
+
+.sidebar-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 1rem 0.5rem;
+}

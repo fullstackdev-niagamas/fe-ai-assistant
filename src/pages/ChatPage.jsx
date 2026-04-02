@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import { Send, Plus, MessageCircle, MoreVertical, Trash2, Edit2, Bot, User, Loader2, X, Search, HelpCircle, ChevronRight } from 'lucide-react';
+import { Send, Plus, MessageCircle, MoreVertical, Trash2, Edit2, Bot, User, Loader2, X, Search, HelpCircle, ChevronRight, LayoutDashboard } from 'lucide-react';
 import './ChatPage.css';
 
+import { useSidebar } from '../context/SidebarContext';
+
 const ChatPage = () => {
+    const navigate = useNavigate();
+    const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
     const [conversations, setConversations] = useState([]);
     const [selectedConvo, setSelectedConvo] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -150,6 +154,7 @@ const ChatPage = () => {
         if (msgId) setTargetMessageId(msgId);
         fetchMessages(convo.id);
         setShowMenu(false);
+        setIsSidebarOpen(false); // Close on mobile after selection
         setInput('');
         setTimeout(() => textareaRef.current?.focus(), 100);
     };
@@ -309,14 +314,25 @@ const ChatPage = () => {
 
     return (
         <div className="chat-container">
+            {/* Mobile Sidebar Overlay */}
+            {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />}
+
             {/* Sidebar */}
-            <div className="chat-sidebar">
+            <div className={`chat-sidebar ${isSidebarOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
                     <div className="sidebar-header-top">
                         <h2>Chats</h2>
-                        <button onClick={handleCreateConvo} className="new-chat-btn-small">
-                            <Plus size={18} />
-                        </button>
+                        <div className="sidebar-header-actions">
+                            <button onClick={handleCreateConvo} className="new-chat-btn-small">
+                                <Plus size={18} />
+                            </button>
+                            <button 
+                                className="close-sidebar-mobile" 
+                                onClick={() => setIsSidebarOpen(false)}
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
                     </div>
                     <div className="search-bar">
                         <Search size={16} className="search-icon" />
@@ -330,6 +346,15 @@ const ChatPage = () => {
                     </div>
                 </div>
                 <div className="sidebar-list">
+                    {user.role === 'superadmin' && (
+                        <div className="global-nav-section">
+                            <div className="sidebar-nav-item" onClick={() => { navigate('/admin'); setIsSidebarOpen(false); }}>
+                                <LayoutDashboard size={18} />
+                                <span>Dashboard</span>
+                            </div>
+                            <div className="sidebar-divider" />
+                        </div>
+                    )}
                     {searchQuery.trim() ? (
                         <div className="search-results-list">
                             {isSearching ? (
@@ -391,8 +416,16 @@ const ChatPage = () => {
                 {selectedConvo ? (
                     <>
                         <div className="chat-header">
-                            <div className="header-info">
-                                <span className="title">{selectedConvo.title}</span>
+                            <div className="header-left-group">
+                                <button 
+                                    className="menu-toggle-btn" 
+                                    onClick={() => setIsSidebarOpen(true)}
+                                >
+                                    <MessageCircle size={20} />
+                                </button>
+                                <div className="header-info">
+                                    <span className="title">{selectedConvo.title}</span>
+                                </div>
                             </div>
                             <div className="header-menu-wrapper" ref={menuRef}>
                                 <button className="icon-btn-no-border" onClick={() => setShowMenu(!showMenu)}><MoreVertical size={20} /></button>

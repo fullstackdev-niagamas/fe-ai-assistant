@@ -97,11 +97,15 @@ const SSOHandler = ({ children }) => {
   return children;
 };
 
+import { SidebarProvider } from './context/SidebarContext.jsx'
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter basename="/ai-assistant">
       <SSOHandler>
-        <App />
+        <SidebarProvider>
+          <App />
+        </SidebarProvider>
       </SSOHandler>
     </BrowserRouter>
   </React.StrictMode>,
