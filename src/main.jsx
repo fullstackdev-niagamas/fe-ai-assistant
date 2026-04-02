@@ -27,6 +27,21 @@ const SSOHandler = ({ children }) => {
             const data = await response.json();
             if (data && data.user) {
               localStorage.setItem('user', JSON.stringify(data.user));
+              
+              // Sync user with our backend
+              const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+              try {
+                await fetch(`${apiBaseUrl}/api/ai-assistant/auth/sync-hub-user`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ user: data.user })
+                });
+              } catch (syncError) {
+                console.error("Failed to sync user with backend:", syncError);
+                // We still proceed even if sync fails locally, 
+                // but usually this means the DB won't have the user yet.
+              }
+
               // Clear token from URL and reload fully to ensure state is clean
               window.history.replaceState({}, document.title, window.location.pathname);
               window.location.reload();
