@@ -1,12 +1,20 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { User, Bot, LayoutDashboard, MessageSquare, Menu } from 'lucide-react';
+import { LogOut, User, Bot, LayoutDashboard, MessageSquare, Menu } from 'lucide-react';
 import { useSidebar } from '../context/SidebarContext';
 
 const Navbar = () => {
     const { toggleSidebar } = useSidebar();
     const navigate = useNavigate();
     const location = useLocation();
+    const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        const hubUrl = import.meta.env.VITE_NLG_HUB_URL || 'http://localhost:5173/nlg-hub';
+        window.location.href = `${hubUrl}/login`;
+    };
     const user = (() => {
         try {
             return JSON.parse(localStorage.getItem('user') || '{}');
@@ -66,7 +74,7 @@ const Navbar = () => {
 
             <div className="navbar-right">
                 <div className="user-profile-wrapper">
-                    <div className="user-profile-trigger">
+                    <div className="user-profile-trigger" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                         <div className="user-info">
                             <span className="user-name">
                                 {typeof (user.fullName || user.name || user.username) === 'string'
@@ -96,6 +104,21 @@ const Navbar = () => {
                         </div>
                     </div>
 
+                    {isDropdownOpen && (
+                        <div className="profile-dropdown shadow-xl">
+                            <div className="dropdown-header">
+                                <span className="user-name">
+                                    {user.fullName || user.name || user.username}
+                                </span>
+                                <div className="email">{user.email}</div>
+                            </div>
+                            <div className="dropdown-divider" />
+                            <button className="dropdown-item logout-btn" onClick={handleLogout}>
+                                <LogOut size={16} color="#ef4444" />
+                                <span style={{ color: '#ef4444', fontWeight: '600' }}>Logout</span>
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
 
