@@ -8,6 +8,17 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+    const dropdownRef = React.useRef(null);
+
+    React.useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('user');
@@ -41,7 +52,7 @@ const Navbar = () => {
 
     // Filter nav items based on user role requirements
     const filteredNavItems = navItems.filter(item => {
-        if (item.path === '/') {
+        if (item.path === '/admin') {
             return user.role === 'superadmin';
         }
         return true;
@@ -73,7 +84,7 @@ const Navbar = () => {
             </div>
 
             <div className="navbar-right">
-                <div className="user-profile-wrapper">
+                <div className="user-profile-wrapper" ref={dropdownRef}>
                     <div className="user-profile-trigger" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                         <div className="user-info">
                             <span className="user-name">

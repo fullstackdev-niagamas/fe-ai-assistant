@@ -15,7 +15,14 @@ const DashboardPage = () => {
 
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
     const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
     
+    useEffect(() => {
+        if (user.role !== 'superadmin') {
+            navigate('/chat');
+        }
+    }, [user, navigate]);
+
     const api = axios.create({
         baseURL: API_BASE_URL,
         headers: { Authorization: `Bearer ${token}` }

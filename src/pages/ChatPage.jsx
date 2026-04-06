@@ -101,6 +101,15 @@ const ChatPage = () => {
         return () => clearTimeout(delaySearch);
     }, [searchQuery]);
 
+    // Update Browser Tab Title
+    useEffect(() => {
+        if (selectedConvo?.title) {
+            document.title = `${selectedConvo.title} | AI Assistant`;
+        } else {
+            document.title = 'AI Chat Assistant';
+        }
+    }, [selectedConvo?.title]);
+
     const handleSearch = async () => {
         try {
             setIsSearching(true);
@@ -127,15 +136,15 @@ const ChatPage = () => {
         }
     };
 
-    const fetchConversations = async () => {
+    const fetchConversations = async (silent = false) => {
         try {
-            setSidebarLoading(true);
+            if (!silent) setSidebarLoading(true);
             const response = await api.get('/api/ai-assistant/conversations');
             setConversations(response.data);
         } catch (err) {
             console.error('Error fetching conversations:', err);
         } finally {
-            setSidebarLoading(false);
+            if (!silent) setSidebarLoading(false);
         }
     };
 
@@ -204,6 +213,14 @@ const ChatPage = () => {
                 conversationId: selectedConvo.id
             });
             
+            // Handle title update if returned (e.g. for New Chat renaming)
+            if (response.data.newTitle) {
+                setConversations(prev => prev.map(c => 
+                    c.id === selectedConvo.id ? { ...c, title: response.data.newTitle } : c
+                ));
+                setSelectedConvo(prev => ({ ...prev, title: response.data.newTitle }));
+            }
+
             if (response.data.type === 'clarification') {
                 setClarificationData({
                     questions: response.data.questions,
@@ -214,14 +231,11 @@ const ChatPage = () => {
             }
 
             setClarificationData(null); // Clear on success
-            if (response.data.newTitle) {
-                setConversations(prev => prev.map(c => 
-                    c.id === selectedConvo.id ? { ...c, title: response.data.newTitle } : c
-                ));
-                setSelectedConvo(prev => ({ ...prev, title: response.data.newTitle }));
-            }
-
+            
             setMessages(prev => [...prev, { role: 'model', content: response.data.response }]);
+            
+            // Silent refresh of conversations list to ensure sidebar stays in sync
+            fetchConversations(true);
         } catch (err) {
             showToast('Failed to send message');
         } finally {
@@ -306,11 +320,48 @@ const ChatPage = () => {
 
     const formatMarkdown = (text) => {
         if (!text) return '';
-        const bold = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        return bold.split('\n').map((line, i) => (
-            <span key={i} dangerouslySetInnerHTML={{ __html: line + (i < bold.split('\n').length - 1 ? '<br/>' : '') }} />
-        ));
+        
+        // Handle headers (mapping for chat UI preference)
+        let formatted = text.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+        formatted = formatted.replace(/^## (.*$)/gm, '<h1>$1</h1>');
+        formatted = formatted.replace(/^### (.*$)/gm, '<h1>$1</h1>');
+        formatted = formatted.replace(/^#### (.*$)/gm, '<h2>$1</h2>');
+        
+        // Handle * list items - change to -
+        formatted = formatted.replace(/^\* /gm, '- ');
+
+        // Bold **text**
+        formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        // Italic *text*
+        formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+        return formatted.split('\n').map((line, i) => {
+            // Check if this line contains any header tag
+            const isHeader = /<(h1|h2|h3|h4)/.test(line);
+            
+            if (isHeader) {
+                return (
+                    <div 
+                        key={i} 
+                        className="message-header"
+                        dangerouslySetInnerHTML={{ __html: line }} 
+                    />
+                );
+            }
+            
+            return (
+                <span 
+                    key={i} 
+                    dangerouslySetInnerHTML={{ 
+                        __html: line + (i < formatted.split('\n').length - 1 ? '<br/>' : '') 
+                    }} 
+                />
+            );
+        });
     };
+
+
 
     return (
         <div className="chat-container">
